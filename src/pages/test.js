@@ -4,13 +4,12 @@ import { useState, useEffect } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import Messages from "components/Messages/Messages";
 
-export default function Home() {
+export default function Test() {
   const [channels, setChannels] = useState([]);
   const [editMode, setEditMode] = useState(false);
   const [updatedData, setUpdatedData] = useState({});
   const [selectedChannelId, setSelectedChannelId] = useState(null);
   const [currentChannelName, setCurrentChannelName] = useState("");
-  const [messageId, setMessageId] = useState(1);
 
   const handleEdit = (id) => {
     setSelectedChannelId(id);
@@ -122,7 +121,7 @@ export default function Home() {
             </div>
           ))}
         </main>
-        <Messages messageId={messageId} />
+        <Messages />
       </div>
     </>
   );

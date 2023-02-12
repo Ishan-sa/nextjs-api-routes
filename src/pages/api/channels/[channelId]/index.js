@@ -20,10 +20,19 @@ export default async function handler(req, res) {
 
     case "PUT":
       // Update a channel by id
-      res.status(200).json({
-        message: `PUT request to /api/channels/${channelId} not implemented yet`,
-      });
+      const { name } = req.body;
+      if (!name) {
+        res.status(400).json({ message: "Missing channel name" });
+        break;
+      }
+      const updatedChannel = await updateChannelById(channelId, name);
+      if (!updatedChannel) {
+        res.status(404).json({ message: "Channel not found" });
+        break;
+      }
+      res.status(200).json(updatedChannel);
       break;
+
     case "DELETE":
       // Delete a channel by id
       await deleteChannelById(channelId);
