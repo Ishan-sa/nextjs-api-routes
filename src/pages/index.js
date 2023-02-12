@@ -48,6 +48,10 @@ export default function Home() {
     }
   };
 
+  const handleChannelClick = (id) => {
+    setMessageId(id + 1);
+  };
+
   return (
     <>
       <Head>
@@ -63,7 +67,12 @@ export default function Home() {
               key={channel.id}
               className="flex flex-row px-2 py-4 rounded-lg gap-8"
             >
-              <h1 className="text-md text-[#f5f5f5]"># {channel.name}</h1>
+              <h1
+                className="text-md text-[#f5f5f5]"
+                onClick={() => handleChannelClick(channel.id)}
+              >
+                # {channel.name}
+              </h1>
               {/* <h3 className="text-gray-700">{channel.created}</h3> */}
               {editMode && selectedChannelId === channel.id ? (
                 <form
