@@ -7,10 +7,14 @@ export default function SendMessageForm({
 }) {
   return (
     <>
-      <form action="" className="flex w-full" onSubmit={handleSubmit}>
+      <form
+        action=""
+        className="flex w-full bg-[#404349] fixed bottom-0 shadow-lg"
+        onSubmit={handleSubmit}
+      >
         <input
           type="text"
-          className="w-full border-2 border-gray-300 rounded-lg px-2 py-1 my-4 mx-6"
+          className="border-2 border-gray-300 rounded-lg px-2 py-1 my-4 mx-6"
           placeholder="Send a Message"
           value={handleValue}
           onChange={handleChange}

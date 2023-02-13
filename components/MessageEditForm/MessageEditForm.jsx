@@ -1,4 +1,4 @@
-import { AiFillDelete, AiFillEdit, AiFillCheckSquare } from "react-icons/ai";
+import { AiFillCheckSquare } from "react-icons/ai";
 
 export default function MessageEditForm({
   handleChange = (e) => {},

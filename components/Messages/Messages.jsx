@@ -1,10 +1,7 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import Image from "next/image";
-import { faker } from "@faker-js/faker";
-import { AiFillDelete, AiFillEdit, AiFillCheckSquare } from "react-icons/ai";
 import SendMessageForm from "components/SendMessageForm/SendMessageForm";
-import Modal from "components/Modal/Modal";
 import MessageEditForm from "components/MessageEditForm/MessageEditForm";
 import UsualMessages from "components/UsualMessages/UsualMessages";
 
@@ -28,10 +25,6 @@ export default function Messages({ messageId = 1 }) {
   useEffect(() => {
     fetchMessage();
   });
-
-  const images = {
-    image: (id) => faker.image.abstract(30 + id, 30 + id, true),
-  };
 
   const handleEdit = (id, text) => {
     setEditId(id);
@@ -64,7 +57,7 @@ export default function Messages({ messageId = 1 }) {
     e.preventDefault();
     try {
       await axios.post(`api/channels/${channelId}/messages/`, {
-        userName: "saM",
+        userName: "Henry",
         text: msgText,
       });
       fetchMessage();
@@ -76,12 +69,12 @@ export default function Messages({ messageId = 1 }) {
 
   return (
     <>
-      <div className="flex flex-col justify-center items-center w-full">
+      <div className="flex flex-col justify-center items-center w-full bg-[#36393f]">
         <div className="flex py-6 justify-center">
-          <h1 className="text-xl font-bold">Messages</h1>
+          <h1 className="text-xl font-bold text-white">Discord 2.0</h1>
         </div>
         <hr className="border-t-4 w-full border-[#2f3136]" />
-        <div className="flex flex-col w-full px-8">
+        <div className="flex flex-col w-full px-8 mb-[80px]">
           {message ? (
             message.map((message, id) => {
               return (
@@ -91,13 +84,13 @@ export default function Messages({ messageId = 1 }) {
                       handleChange={(e) => setEditMessage(e.target.value)}
                       handleClick={() => handleSave(message.id)}
                       handleValue={editMessage}
-                      messageCreated={message.created}
+                      messageCreated={message.created.split("T")[1]}
                       messageUserName={message.userName}
                     />
                   ) : (
                     <UsualMessages
                       messageUserName={message.userName}
-                      messageCreated={message.created}
+                      messageCreated={message.created.split("T")[1]}
                       messageText={message.text}
                       handleEditClick={() =>
                         handleEdit(message.id, message.text)
@@ -113,11 +106,13 @@ export default function Messages({ messageId = 1 }) {
           )}
         </div>
         <hr className="border-t-4 w-full border-[#d4d4d4]" />
-        <SendMessageForm
-          handleSubmit={sendMessage}
-          handleChange={(e) => setMsgText(e.target.value)}
-          handleValue={msgText}
-        />
+        <div className="w-full">
+          <SendMessageForm
+            handleSubmit={sendMessage}
+            handleChange={(e) => setMsgText(e.target.value)}
+            handleValue={msgText}
+          />
+        </div>
       </div>
     </>
   );
