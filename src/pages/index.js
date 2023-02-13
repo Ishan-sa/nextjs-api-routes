@@ -3,6 +3,9 @@ import axios from "axios";
 import { useState, useEffect } from "react";
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
 import Messages from "components/Messages/Messages";
+import NewChannelForm from "components/NewChannelForm/NewChannelForm";
+import EditForm from "components/EditForm/EditForm";
+import UpdateButtons from "components/UpdateButtons/UpdateButtons";
 
 export default function Home() {
   const [channels, setChannels] = useState([]);
@@ -11,19 +14,13 @@ export default function Home() {
   const [selectedChannelId, setSelectedChannelId] = useState(null);
   const [currentChannelName, setCurrentChannelName] = useState("");
   const [messageId, setMessageId] = useState(1);
+  const [newChannelForm, setNewChannelForm] = useState(false);
+  const [newChannelName, setNewChannelName] = useState("");
 
   const handleEdit = (id) => {
     setSelectedChannelId(id);
     setCurrentChannelName(channels.find((channel) => channel.id === id).name);
   };
-
-  useEffect(() => {
-    const fetchChannels = async () => {
-      const { data } = await axios.get("/api/channels");
-      setChannels(data);
-    };
-    fetchChannels();
-  });
 
   const deleteChannel = async (id) => {
     try {
@@ -48,9 +45,25 @@ export default function Home() {
     }
   };
 
-  const handleChannelClick = (id) => {
-    setMessageId(id + 1);
+  const createNewChannel = async () => {
+    try {
+      const { data } = await axios.post("/api/channels", {
+        name: newChannelName,
+      });
+      setChannels([...channels, data]);
+      setNewChannelName("");
+    } catch (error) {
+      console.log(error.message);
+    }
   };
+
+  useEffect(() => {
+    const fetchChannels = async () => {
+      const { data } = await axios.get("/api/channels");
+      setChannels(data);
+    };
+    fetchChannels();
+  });
 
   return (
     <>
@@ -62,70 +75,61 @@ export default function Home() {
       </Head>
       <div className="flex">
         <main className="main-cont">
+          <button
+            className="bg-[#7289da] text-white px-2 py-1 rounded-lg my-4"
+            onClick={() => {
+              setNewChannelForm(!newChannelForm);
+              createNewChannel();
+            }}
+          >
+            New channel +
+          </button>
+          {newChannelForm && (
+            <NewChannelForm
+              handleValue={newChannelName}
+              handleChange={(e) => {
+                setNewChannelName(e.target.value);
+              }}
+              handleClick={() => {
+                setNewChannelForm(!newChannelForm);
+              }}
+            />
+          )}
+          {/* {newChannelForm && <NewChannelForm />} */}
           {channels.map((channel) => (
             <div
               key={channel.id}
               className="flex flex-row px-2 py-4 rounded-lg gap-8"
             >
-              <h1
-                className="text-md text-[#f5f5f5]"
-                onClick={() => handleChannelClick(channel.id)}
-              >
-                # {channel.name}
-              </h1>
+              <h1 className="text-md text-[#f5f5f5]"># {channel.name}</h1>
               {/* <h3 className="text-gray-700">{channel.created}</h3> */}
               {editMode && selectedChannelId === channel.id ? (
-                <form
-                  onSubmit={(e) => {
+                <EditForm
+                  handleSubmit={(e) => {
                     e.preventDefault();
                     updateChannel(channel.id, updatedData);
                     setEditMode(false);
                   }}
-                >
-                  <input
-                    type="text"
-                    placeholder="Channel Name"
-                    className="border-2 border-gray-300 rounded-lg px-2 py-1"
-                    // value={updatedData.name || ""}
-                    // value={currentChannelName}
-                    defaultValue={currentChannelName}
-                    onChange={(e) => {
-                      setCurrentChannelName(e.target.value);
-                      setUpdatedData({ ...updatedData, name: e.target.value });
-                    }}
-                  />
-                  <div>
-                    <button
-                      type="submit"
-                      className="bg-green-400 text-white px-2 py-1 rounded-lg mt-4 mr-2"
-                    >
-                      Save
-                    </button>
-                    <button
-                      onClick={() => {
-                        setEditMode(false);
-                      }}
-                      className="bg-red-400 text-white px-2 py-1 rounded-lg mt-4"
-                    >
-                      Cancel
-                    </button>
-                  </div>
-                </form>
+                  defaultValue={currentChannelName}
+                  handleChange={(e) => {
+                    setCurrentChannelName(e.target.value);
+                    setUpdatedData({ ...updatedData, name: e.target.value });
+                  }}
+                  handleClick={() => {
+                    setEditMode(false);
+                  }}
+                />
               ) : (
                 <>
-                  <div className="flex items-center gap-2">
-                    <AiFillDelete
-                      onClick={() => deleteChannel(channel.id)}
-                      className="text-red-400 text-2xl cursor-pointer"
-                    />
-                    <AiFillEdit
-                      onClick={() => {
-                        handleEdit(channel.id);
-                        setEditMode(true);
-                      }}
-                      className="text-blue-400 text-2xl cursor-pointer"
-                    />
-                  </div>
+                  <UpdateButtons
+                    handleEditClick={() => {
+                      setEditMode(true);
+                      handleEdit(channel.id);
+                    }}
+                    handleDeleteClick={() => {
+                      deleteChannel(channel.id);
+                    }}
+                  />
                 </>
               )}
             </div>
