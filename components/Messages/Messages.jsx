@@ -3,12 +3,17 @@ import axios from "axios";
 import Image from "next/image";
 import { faker } from "@faker-js/faker";
 import { AiFillDelete, AiFillEdit, AiFillCheckSquare } from "react-icons/ai";
+import SendMessageForm from "components/SendMessageForm/SendMessageForm";
+import Modal from "components/Modal/Modal";
+import MessageEditForm from "components/MessageEditForm/MessageEditForm";
+import UsualMessages from "components/UsualMessages/UsualMessages";
 
 export default function Messages({ messageId = 1 }) {
   const [message, setMessage] = useState(null);
   const [channelId, setChannelId] = useState(messageId);
   const [editMessage, setEditMessage] = useState("");
   const [editId, setEditId] = useState(null);
+  const [msgText, setMsgText] = useState("");
 
   const fetchMessage = async () => {
     try {
@@ -55,6 +60,20 @@ export default function Messages({ messageId = 1 }) {
     }
   };
 
+  const sendMessage = async (e) => {
+    e.preventDefault();
+    try {
+      await axios.post(`api/channels/${channelId}/messages/`, {
+        userName: "saM",
+        text: msgText,
+      });
+      fetchMessage();
+      setMsgText("");
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <>
       <div className="flex flex-col justify-center items-center w-full">
@@ -68,30 +87,24 @@ export default function Messages({ messageId = 1 }) {
               return (
                 <div key={id} className="py-2">
                   {editId === message.id ? (
-                    <div className="flex items-center">
-                      <input
-                        type="text"
-                        value={editMessage}
-                        onChange={(e) => setEditMessage(e.target.value)}
-                      />
-                      <AiFillCheckSquare
-                        onClick={() => handleSave(message.id)}
-                        className="cursor-pointer w-7 h-7 text-green-500"
-                      />
-                    </div>
+                    <MessageEditForm
+                      handleChange={(e) => setEditMessage(e.target.value)}
+                      handleClick={() => handleSave(message.id)}
+                      handleValue={editMessage}
+                      messageCreated={message.created}
+                      messageUserName={message.userName}
+                    />
                   ) : (
-                    <div className="flex items-center gap-3">
-                      <h3 className="text-md font-bold text-blue-900">
-                        {message.userName}
-                      </h3>
-                      <p className="text-gray-500 text-sm">{message.created}</p>
-                      <AiFillEdit
-                        onClick={() => handleEdit(message.id, message.text)}
-                      />
-                      <AiFillDelete onClick={() => handleDelete(message.id)} />
-                    </div>
+                    <UsualMessages
+                      messageUserName={message.userName}
+                      messageCreated={message.created}
+                      messageText={message.text}
+                      handleEditClick={() =>
+                        handleEdit(message.id, message.text)
+                      }
+                      handleDeleteClick={() => handleDelete(message.id)}
+                    />
                   )}
-                  <p>{message.text}</p>
                 </div>
               );
             })
@@ -99,6 +112,12 @@ export default function Messages({ messageId = 1 }) {
             <p>No messages in this channel</p>
           )}
         </div>
+        <hr className="border-t-4 w-full border-[#d4d4d4]" />
+        <SendMessageForm
+          handleSubmit={sendMessage}
+          handleChange={(e) => setMsgText(e.target.value)}
+          handleValue={msgText}
+        />
       </div>
     </>
   );
