@@ -1,3 +1,12 @@
+@font-face {
+  font-family: "gg sans", sans-serif;
+  src: url("/fonts/ggsans-Normal.ttf");
+}
+
+html,
+body {
+  font-family: "gg sans";
+}
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -22,4 +31,12 @@
   max-width: fit-content;
   background-color: #2f3136;
   padding: 0 1rem;
+}
+
+.channelHover {
+  background-color: #3f4248;
+}
+
+.hide-scroll {
+  scrollbar-width: none;
 }

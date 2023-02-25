@@ -1,5 +1,4 @@
 import { AiFillDelete, AiFillEdit } from "react-icons/ai";
-import { faker } from "@faker-js/faker";
 
 export default function UsualMessages({
   messageUserName,
@@ -7,14 +6,12 @@ export default function UsualMessages({
   messageCreated,
   handleEditClick = () => {},
   handleDeleteClick = () => {},
+  imgSrc,
 }) {
-  const images = {
-    image: faker.image.cats(),
-  };
   return (
     <>
       <div className="flex items-center gap-3">
-        <img src={images.image} className="w-7 h-7 rounded-full" />
+        <img src={imgSrc} className="w-7 h-7 rounded-full" />
         <div className="flex flex-col">
           <div className="flex gap-2 items-center">
             <h3 className="text-md font-bold text-[#afbff9]">

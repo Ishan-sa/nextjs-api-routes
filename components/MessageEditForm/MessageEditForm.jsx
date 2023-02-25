@@ -6,12 +6,16 @@ export default function MessageEditForm({
   handleValue,
   messageCreated,
   messageUserName,
+  imgSrc,
 }) {
   return (
     <>
       <div className="flex flex-col">
         <div className="flex gap-2 items-center">
-          <h3 className="text-md font-bold text-blue-900">{messageUserName}</h3>
+          <img src={imgSrc} className="w-7 h-7 rounded-full" />
+          <h3 className="text-md font-bold text-[#afbff9]">
+            {messageUserName}
+          </h3>
           <p className="text-gray-500 text-sm">{messageCreated}</p>
         </div>
         <div className="flex items-center gap-2">

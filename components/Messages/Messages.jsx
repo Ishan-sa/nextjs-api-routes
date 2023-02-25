@@ -4,6 +4,7 @@ import Image from "next/image";
 import SendMessageForm from "components/SendMessageForm/SendMessageForm";
 import MessageEditForm from "components/MessageEditForm/MessageEditForm";
 import UsualMessages from "components/UsualMessages/UsualMessages";
+import { faker } from "@faker-js/faker";
 
 export default function Messages({ messageId = 1 }) {
   const [message, setMessage] = useState(null);
@@ -57,7 +58,7 @@ export default function Messages({ messageId = 1 }) {
     e.preventDefault();
     try {
       await axios.post(`api/channels/${channelId}/messages/`, {
-        userName: "Henry",
+        userName: "Daemon",
         text: msgText,
       });
       fetchMessage();
@@ -65,6 +66,10 @@ export default function Messages({ messageId = 1 }) {
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const images = {
+    image: faker.image.cats(),
   };
 
   return (
@@ -86,6 +91,7 @@ export default function Messages({ messageId = 1 }) {
                       handleValue={editMessage}
                       messageCreated={message.created.split("T")[1]}
                       messageUserName={message.userName}
+                      imgSrc={images.image}
                     />
                   ) : (
                     <UsualMessages
@@ -96,6 +102,7 @@ export default function Messages({ messageId = 1 }) {
                         handleEdit(message.id, message.text)
                       }
                       handleDeleteClick={() => handleDelete(message.id)}
+                      imgSrc={images.image}
                     />
                   )}
                 </div>
