@@ -17,20 +17,6 @@ export default function Home() {
   const [newChannelForm, setNewChannelForm] = useState(false);
   const [newChannelName, setNewChannelName] = useState("");
 
-  const handleEdit = (id) => {
-    setSelectedChannelId(id);
-    setCurrentChannelName(channels.find((channel) => channel.id === id).name);
-  };
-
-  const deleteChannel = async (id) => {
-    try {
-      await axios.delete(`/api/channels/${id}`);
-      setChannels(channels.filter((channel) => channel.id !== id));
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
-
   const updateChannel = async (id, updatedData) => {
     if (Object.keys(updatedData).length > 0) {
       await axios.put(`/api/channels/${id}`, updatedData);
@@ -42,6 +28,20 @@ export default function Home() {
       setUpdatedData({});
     } else {
       setEditMode(false);
+    }
+  };
+
+  const handleEdit = (id) => {
+    setSelectedChannelId(id);
+    setCurrentChannelName(channels.find((channel) => channel.id === id).name);
+  };
+
+  const deleteChannel = async (id) => {
+    try {
+      await axios.delete(`/api/channels/${id}`);
+      setChannels(channels.filter((channel) => channel.id !== id));
+    } catch (error) {
+      console.log(error.message);
     }
   };
 

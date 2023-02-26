@@ -2,12 +2,8 @@ import { getAllMessages, getAllChannels } from "../../database";
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import Link from "next/link";
-import NewChannelForm from "components/NewChannelForm/NewChannelForm";
 import { AiOutlineSend } from "react-icons/ai";
 import Image from "next/image";
-import { FiSettings } from "react-icons/fi";
-import UpdatePopup from "components/UpdatePopup/UpdatePopup";
-import NewChannelPopup from "components/NewChannelPopup/NewChannelPopup";
 import { BiEdit } from "react-icons/bi";
 import { AiFillDelete, AiFillCheckCircle } from "react-icons/ai";
 
@@ -23,8 +19,6 @@ export default function Channel({
   const [selectedChannelId, setSelectedChannelId] = useState(channelId);
   const [newChannelPopup, setNewChannelPopup] = useState(false);
   const [newChannelName, setNewChannelName] = useState("");
-  const [editMode, setEditMode] = useState(false);
-  const [updatedChannelName, setUpdatedChannelName] = useState({});
 
   const handleSubmit = async (e) => {
     try {
@@ -70,32 +64,7 @@ export default function Channel({
     }
   };
 
-  const updateChannel = async (id, updatedData) => {
-    if (Object.keys(updatedData).length > 0) {
-      await axios.put(`/api/channels/${id}`, updatedData);
-      setChannels(
-        channels.map((channel) =>
-          channel.id === id ? { ...channel, ...updatedData } : channel
-        )
-      );
-      setUpdatedChannelName({});
-    } else {
-      setUpdatedChannelName({});
-    }
-    await axios.put(`/api/channels/${channelId}`, {
-      name: newChannelName,
-    });
-  };
-
-  const deleteChannel = async (channelId) => {
-    try {
-      await axios.delete(`/api/channels/${channelId}`);
-      setChannels(channels.filter((channel) => channel.id !== channelId));
-      //   setSelectedChannelId(channels[0].id);
-    } catch (error) {
-      console.log(error.message);
-    }
-  };
+  // set the bg to the selected channel and text to white when the page loads according to the selected channel id
 
   return (
     <>
@@ -150,7 +119,7 @@ export default function Channel({
             </div>
           )}
 
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col gap-2 mt-2">
             {channels.map((channel) => (
               <div key={channel.id}>
                 <Link href={`/channels/${channel.id}`}>
@@ -164,7 +133,7 @@ export default function Channel({
                   >
                     {`${
                       channel.name.length > 20
-                        ? "# " + channel.name.substr(0, 25) + " ..."
+                        ? "# " + channel.name.substr(0, 25) + "..."
                         : "# " + channel.name
                     }`}
                     {
@@ -173,28 +142,17 @@ export default function Channel({
                         <div className="flex items-center gap-2">
                           <BiEdit
                             className={`hover:text-[#848eff] transition-all duration-100`}
-                            onClick={() => setEditMode(!editMode)}
+                            // onClick={() => setEditMode(!editMode)}
                           />
                           <AiFillDelete
                             className={`hover:text-[#848eff] transition-all duration-100`}
-                            onClick={deleteChannel(channel.id)}
+                            // onClick={() => deleteChannel(channel.id)}
                           />
                         </div>
                       )
                     }
                   </h1>
                 </Link>
-                {editMode && (
-                  <form onSubmit={(e) => e.preventDefault()}>
-                    <input
-                      type="text"
-                      value={updatedChannelName}
-                      onChange={(e) => setUpdatedChannelName(e.target.value)}
-                      placeholder="Edit channel name"
-                    />
-                    <button onClick={updateChannel}>Update</button>
-                  </form>
-                )}
               </div>
             ))}
           </div>
@@ -203,7 +161,7 @@ export default function Channel({
           <div className="flex justify-start bg-[#313338] py-2 px-6 shadow-xl fixed w-full top-0">
             <h1 className="text-white font-bold text-lg"># {channelId}</h1>
           </div>
-          <ul className="px-6 mb-[4rem] mt-[2rem] py-4">
+          <ul className="mb-[4rem] mt-[2.5rem] py-4 flex flex-col gap-2">
             {messages.map((message) => {
               const createdDate = new Date(message.created);
               const today = new Date();
@@ -232,7 +190,7 @@ export default function Channel({
               return (
                 <>
                   <div
-                    className="flex items-center gap-3 mb-4"
+                    className="flex items-center gap-3 px-6 py-2 hover:bg-[#2B2D31]"
                     key={message.id}
                   >
                     <div>
